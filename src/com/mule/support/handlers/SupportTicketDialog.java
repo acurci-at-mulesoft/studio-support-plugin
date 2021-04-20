@@ -1,5 +1,9 @@
 package com.mule.support.handlers;
 
+import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
+
 import org.eclipse.core.resources.*;
 import org.eclipse.jface.dialogs.IMessageProvider;
 import org.eclipse.jface.dialogs.TitleAreaDialog;
@@ -146,14 +150,20 @@ public class SupportTicketDialog extends TitleAreaDialog {
         steps = txtSteps.getText();
         expected = txtExpected.getText();
         
-        System.out.println(" * projectName: " + projectName + 
+        String message = " * projectName: " + projectName + 
         				 "\n * description: " + description + 
         				 "\n * steps: " + steps + 
-        				 "\n * expected: " + expected 
-        		);
+        				 "\n * expected: " + expected ;
         
-        // TODO Add attachments and post the request.
-        
+        List<File> attachments = new ArrayList<>();
+        if(btnIncludeMuleApp.getSelection()){
+        	attachments.add(CollectFiles.getMuleApp());
+        }
+        if(btnIncludeLogs.getSelection()){
+        	attachments.add(CollectFiles.getLog());     	
+        }
+
+        String issueNumber = SalesforceServices.createSupportCase(message, attachments);
         
 
     }
