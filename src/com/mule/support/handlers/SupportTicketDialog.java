@@ -45,6 +45,11 @@ public class SupportTicketDialog extends TitleAreaDialog {
     private String expected;
     
     
+    IWorkspace workspace;
+    IWorkspaceRoot root;
+    IProject[] projects;
+    
+    
     public SupportTicketDialog(Shell parentShell) {
         super(parentShell);
     }
@@ -76,10 +81,6 @@ public class SupportTicketDialog extends TitleAreaDialog {
         btnIncludeLogs = new Button(container, SWT.CHECK | SWT.WRAP);
         btnIncludeLogs.setText(INCLUDE_LOG_LABEL);
         btnIncludeLogs.setSelection(true);
-        
-        
-        
-        
         return area;
     }
 
@@ -88,7 +89,6 @@ public class SupportTicketDialog extends TitleAreaDialog {
         Label lbtProjectCombo = new Label(container, SWT.NONE);
         lbtProjectCombo.setText(PROJECT_LABEL);
 
-        
         GridData dataProjectCombo = new GridData();
         dataProjectCombo.grabExcessHorizontalSpace = true;
         dataProjectCombo.horizontalAlignment = GridData.FILL;
@@ -96,8 +96,13 @@ public class SupportTicketDialog extends TitleAreaDialog {
         cmbProjects = new Combo(container, SWT.BORDER);
         cmbProjects.setLayoutData(dataProjectCombo);
         
-        //TODO delete this
-        cmbProjects.add("00287755-testcase", 0);
+        workspace = ResourcesPlugin.getWorkspace();
+        root = workspace.getRoot();
+        projects = root.getProjects();
+        int i=0;
+        for(IProject p: projects) {
+        	cmbProjects.add(p.getName(), i++);
+        }        
 
     }
 
@@ -150,17 +155,20 @@ public class SupportTicketDialog extends TitleAreaDialog {
         steps = txtSteps.getText();
         expected = txtExpected.getText();
         
-        String message = " * projectName: " + projectName + 
-        				 "\n * description: " + description + 
-        				 "\n * steps: " + steps + 
-        				 "\n * expected: " + expected ;
+        IProject project = root.getProject(cmbProjects.getText());
         
+        String message = " * " + PROJECT_LABEL				+ ": " + project.getName() +  "\n" + 
+        				 " * " + DESCRIPTION_LABEL			+ ": " + description +  "\n" + 
+        				 " * " + STEPS_LABEL 			 	+ ": " + steps 		 +  "\n" + 
+        				 " * " + EXPECTED_LABEL				+ ": " + expected    +  "\n"  ;
+        System.out.println(message);
+
         List<File> attachments = new ArrayList<>();
         if(btnIncludeMuleApp.getSelection()){
-        	attachments.add(CollectFiles.getMuleApp());
+        	attachments.add(CollectFiles.getMuleApp(project));
         }
         if(btnIncludeLogs.getSelection()){
-        	attachments.add(CollectFiles.getLog());     	
+        	attachments.add(CollectFiles.getLog(project));     	
         }
 
         String issueNumber = SalesforceServices.createSupportCase(message, attachments);
