@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+
+   <extension
+         point="org.eclipse.ui.commands">
+      <category
+            id="com.mule.support.commands.category"
+            name="Sample Category">
+      </category>
+      <command
+            categoryId="com.mule.support.commands.category"
+            name="Sample Command"
+            id="com.mule.support.commands.sampleCommand">
+      </command>
+   </extension>
+   <extension
+         point="org.eclipse.ui.handlers">
+      <handler
+            class="com.mule.support.handlers.SampleHandler"
+            commandId="com.mule.support.commands.sampleCommand">
+      </handler>
+   </extension>
+   <extension
+         point="org.eclipse.ui.bindings">
+      <key
+            commandId="com.mule.support.commands.sampleCommand"
+            schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
+            contextId="org.eclipse.ui.contexts.window"
+            sequence="M1+6">
+      </key>
+   </extension>
+   <extension
+         point="org.eclipse.ui.menus">
+      <menuContribution
+            locationURI="menu:org.eclipse.ui.main.menu?after=additions">
+         <menu
+               id="com.mule.support.menus.sampleMenu"
+               label="Sample Menu"
+               mnemonic="M">
+            <command
+                  commandId="com.mule.support.commands.sampleCommand"
+                  id="com.mule.support.menus.sampleCommand"
+                  mnemonic="S">
+            </command>
+         </menu>
+      </menuContribution>
+      <menuContribution
+            locationURI="toolbar:org.eclipse.ui.main.toolbar?after=additions">
+         <toolbar
+               id="com.mule.support.toolbars.sampleToolbar">
+            <command
+                  id="com.mule.support.toolbars.sampleCommand"
+                  commandId="com.mule.support.commands.sampleCommand"
+                  icon="icons/sample.png"
+                  tooltip="Create support ticket">
+            </command>
+         </toolbar>
+      </menuContribution>
+   </extension>
+
+</plugin>
