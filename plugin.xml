@@ -52,7 +52,7 @@
             <command
                   id="com.mule.support.toolbars.sampleCommand"
                   commandId="com.mule.support.commands.sampleCommand"
-                  icon="icons/sample.png"
+                  icon="icons/studio16x16-blue-mule.png"
                   tooltip="Create support ticket">
             </command>
          </toolbar>
