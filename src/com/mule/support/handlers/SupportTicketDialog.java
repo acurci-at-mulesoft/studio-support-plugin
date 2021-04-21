@@ -39,7 +39,7 @@ public class SupportTicketDialog extends TitleAreaDialog {
     private Text txtExpected;
     private Button btnIncludeMuleApp;
     private Button btnIncludeLogs;
-    private GridData defaultLayout;
+    private GridData txtLayout;
     
     private String projectName;
     private String description;
@@ -54,13 +54,19 @@ public class SupportTicketDialog extends TitleAreaDialog {
     
     public SupportTicketDialog(Shell parentShell) {
         super(parentShell);
+        
+        txtLayout = new GridData(GridData.HORIZONTAL_ALIGN_FILL | GridData.GRAB_HORIZONTAL);
+    	txtLayout.verticalAlignment = GridData.FILL;
+    	txtLayout.verticalSpan = 2;
     }
 
     @Override
     public void create() {
         super.create();
         setTitle(TITLE);
-        setMessage(DISCLAIMER, IMessageProvider.WARNING);
+        setMessage(DISCLAIMER, IMessageProvider.INFORMATION);
+        
+
     }
 
     @Override
@@ -78,25 +84,11 @@ public class SupportTicketDialog extends TitleAreaDialog {
 			e.printStackTrace();
 		}
         
-        defaultLayout = new GridData();
-        defaultLayout.grabExcessHorizontalSpace = true;
-        defaultLayout.horizontalAlignment = GridData.FILL;
-        defaultLayout.widthHint = 100;
-        
         createDescription(container);
         createSteps(container);
         createExpected(container);
-        
-        btnIncludeMuleApp = new Button(container, SWT.CHECK | SWT.NONE);
-        btnIncludeMuleApp.setText(INCLUDE_MULEAPP_LABEL);
-        btnIncludeMuleApp.setSelection(true);
-        btnIncludeMuleApp.setLayoutData(defaultLayout);
-
-        
-        btnIncludeLogs = new Button(container, SWT.CHECK | SWT.WRAP);
-        btnIncludeLogs.setText(INCLUDE_LOG_LABEL);
-        btnIncludeLogs.setSelection(true);
-        btnIncludeMuleApp.setLayoutData(defaultLayout);
+        createIncludeMuleApp(container);
+        createIncludeLogs(container);
 
         return area;
     }
@@ -107,7 +99,7 @@ public class SupportTicketDialog extends TitleAreaDialog {
         lbtProjectCombo.setText(PROJECT_LABEL);
 
         cmbProjects = new Combo(container, SWT.NONE);
-        cmbProjects.setLayoutData(defaultLayout);
+        cmbProjects.setLayoutData(new GridData(GridData.HORIZONTAL_ALIGN_FILL | GridData.GRAB_HORIZONTAL));
         
         workspace = ResourcesPlugin.getWorkspace();
         root = workspace.getRoot();
@@ -123,31 +115,49 @@ public class SupportTicketDialog extends TitleAreaDialog {
         	}
         }        
     }
-
+    
+    
     private void createDescription(Composite container) {
-        Label lbtDescription = new Label(container, SWT.NONE);
+    	
+    	Label lbtDescription = new Label(container, SWT.NONE);
         lbtDescription.setText(DESCRIPTION_LABEL);
-        txtDescription = new Text(container, SWT.BORDER);
-        txtDescription.setSize(40, 10);
-        txtDescription.setLayoutData(defaultLayout);
-    }
+        
+        txtDescription = new Text(container, SWT.BORDER | SWT.MULTI| SWT.V_SCROLL);
+        txtDescription.setLayoutData(txtLayout);
+    	Label lbtEmpty = new Label(container, SWT.NONE);
 
+    }
+    
     private void createSteps(Composite container) {
         Label lbtSteps = new Label(container, SWT.NONE);
         lbtSteps.setText(STEPS_LABEL);
-        txtSteps = new Text(container, SWT.BORDER);
-        txtSteps.setSize(40, 10);
-        txtSteps.setLayoutData(defaultLayout);
+        txtSteps = new Text(container, SWT.BORDER | SWT.MULTI | SWT.V_SCROLL);
+        txtSteps.setLayoutData(txtLayout);
+    	Label lbtEmpty = new Label(container, SWT.NONE);
     }
     
     private void createExpected(Composite container) {
         Label lbtSteps = new Label(container, SWT.NONE);
         lbtSteps.setText(EXPECTED_LABEL);
-        txtExpected = new Text(container, SWT.BORDER);
-        txtExpected.setSize(40, 10);
-        txtExpected.setLayoutData(defaultLayout);
+        txtExpected = new Text(container, SWT.BORDER | SWT.MULTI | SWT.V_SCROLL);
+        txtExpected.setLayoutData(txtLayout);
+        Label lbtEmpty = new Label(container, SWT.NONE);
     }
+
+    private void createIncludeMuleApp(Composite container) {
+        Label lbtIncludeMuleApp = new Label(container, SWT.NONE);
+        lbtIncludeMuleApp.setText(INCLUDE_MULEAPP_LABEL);
+        btnIncludeMuleApp = new Button(container, SWT.CHECK | SWT.NONE);
+        btnIncludeMuleApp.setSelection(true);
+    }    
     
+    private void createIncludeLogs(Composite container) {
+        Label lbtIncludeLogs = new Label(container, SWT.NONE);
+        lbtIncludeLogs.setText(INCLUDE_LOG_LABEL);    
+	    btnIncludeLogs = new Button(container, SWT.CHECK | SWT.WRAP);
+	    btnIncludeLogs.setSelection(true);
+    }
+        
     @Override
     protected boolean isResizable() {
         return true;
@@ -171,13 +181,15 @@ public class SupportTicketDialog extends TitleAreaDialog {
 
         List<File> attachments = new ArrayList<>();
         if(btnIncludeMuleApp.getSelection()){
-        	attachments.add(CollectFiles.getMuleApp(project));
+        	attachments.addAll(CollectFiles.getMuleApp(project));
         }
         if(btnIncludeLogs.getSelection()){
-        	attachments.add(CollectFiles.getLog(project));     	
+        	attachments.addAll(CollectFiles.getLog(project));     	
         }
 
         String issueNumber = SalesforceServices.createSupportCase(projectName, message, attachments);
+        
+        
         
 
     }

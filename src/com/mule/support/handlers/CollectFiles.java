@@ -1,29 +1,42 @@
 package com.mule.support.handlers;
 
 import java.io.File;
+import java.io.FilenameFilter;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.eclipse.core.resources.IProject;
 
 public class CollectFiles {
 
-	public static File getMuleApp(IProject project) {
-		System.out.println(project.getFullPath());
-		System.out.println(project.getLocationURI());
-		System.out.println(project.getLocation());
-		System.out.println(project.getRawLocationURI());
-		System.out.println(project.getRawLocation());
-		//TODO
-		
-		
-		return new File("mule-app-file");
+	public static List<File> getMuleApp(IProject project) {
+		List<File> listFiles = new ArrayList<>();
+		File dir = new File(project.getLocation() + File.separator + "target");
+		File [] files = dir.listFiles(new FilenameFilter() {
+		    @Override
+		    public boolean accept(File dir, String name) {
+		        return name.endsWith(".jar");
+		    }
+		});
+		for (File file : files) {
+			listFiles.add(file);
+		}
+		return listFiles;
 	}
 	
-	public static File getLog(IProject project) {
-		System.out.println(project.getFullPath());
-		//TODO
-		
-		
-		return new File("log-file");
+	public static List<File>  getLog(IProject project) {
+		List<File> listFiles = new ArrayList<>();
+		File dir = new File(project.getLocation() + File.separator + "target");
+		File [] files = dir.listFiles(new FilenameFilter() {
+		    @Override
+		    public boolean accept(File dir, String name) {
+		        return name.endsWith(".log");
+		    }
+		});
+		for (File file : files) {
+			listFiles.add(file);
+		}
+		return listFiles;
 	}
 	
 }
