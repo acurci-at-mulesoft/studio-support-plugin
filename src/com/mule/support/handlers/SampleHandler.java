@@ -3,6 +3,7 @@ package com.mule.support.handlers;
 import org.eclipse.core.commands.*;
 import org.eclipse.ui.*;
 import org.eclipse.ui.handlers.HandlerUtil;
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.window.Window;
 
 
@@ -17,11 +18,9 @@ public class SampleHandler extends AbstractHandler {
 		SupportTicketDialog dialog = new SupportTicketDialog(window.getShell());
 		dialog.create();
 		if (dialog.open() == Window.OK) {
-		    System.out.println("TEST");
-		    System.out.println(dialog.getProjectName());
-		    System.out.println(dialog.getDescription());
+		    System.out.println("ISSUE ID:" + dialog.getIssueNumber());
 		}
-		
+		MessageDialog.openConfirm(window.getShell(), "Confirm", "ISSUE GENERATED: " + dialog.getIssueNumber());
 		return null;
 	}
 	

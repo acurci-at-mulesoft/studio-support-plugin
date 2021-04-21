@@ -33,7 +33,7 @@ public class SupportTicketDialog extends TitleAreaDialog {
 	private static final String INCLUDE_MULEAPP_LABEL = "Include the Mule App";	
 	private static final String INCLUDE_LOG_LABEL = "Include the log file";	
 	
-	
+	private String issueNumber = null;
     private Combo cmbProjects;
     private Text txtDescription;
     private Text txtSteps;
@@ -187,17 +187,14 @@ public class SupportTicketDialog extends TitleAreaDialog {
         if(btnIncludeLogs.getSelection()){
         	attachments.addAll(CollectFiles.getLog(project));     	
         }
-        String issueNumber = SalesforceServices.createSupportCase(projectName, message, attachments);
-        
-        System.out.println(issueNumber);
-        
-
+        //issueNumber = SalesforceServices.createSupportCase(projectName, message, attachments);
+        issueNumber = "5005e000000g4R3AAI";
     }
 
     @Override
     protected void okPressed() {
         saveInput();
-        // super.okPressed();
+        super.okPressed();
     }
 
     public String getProjectName() {
@@ -216,7 +213,9 @@ public class SupportTicketDialog extends TitleAreaDialog {
     	return expected;
     }
     
-    
+    public String getIssueNumber() {
+    	return issueNumber;
+    }
     
     
     
