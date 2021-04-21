@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.core.resources.*;
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.dialogs.IMessageProvider;
 import org.eclipse.jface.dialogs.TitleAreaDialog;
 import org.eclipse.swt.SWT;
@@ -22,7 +23,8 @@ import org.eclipse.swt.widgets.Text;
 public class SupportTicketDialog extends TitleAreaDialog {
 	
 	private static final String TITLE = "Create a ticket for support";
-	private static final String MESSAGE = "You are creating a ticket for technical support team. In this ticket will have the mule app and logs as attachments.";
+	private static final String DISCLAIMER = "WARNING: Don't attach files with confidential information or private credentials.";
+
 	private static final String PROJECT_LABEL = "Mule Application";
 	private static final String DESCRIPTION_LABEL = "What were you doing?";
 	private static final String STEPS_LABEL = "How can we reproduce the problem?";	
@@ -37,7 +39,7 @@ public class SupportTicketDialog extends TitleAreaDialog {
     private Text txtExpected;
     private Button btnIncludeMuleApp;
     private Button btnIncludeLogs;
-    
+    private GridData defaultLayout;
     
     private String projectName;
     private String description;
@@ -58,7 +60,7 @@ public class SupportTicketDialog extends TitleAreaDialog {
     public void create() {
         super.create();
         setTitle(TITLE);
-        setMessage(MESSAGE, IMessageProvider.INFORMATION);
+        setMessage(DISCLAIMER, IMessageProvider.WARNING);
     }
 
     @Override
@@ -69,77 +71,81 @@ public class SupportTicketDialog extends TitleAreaDialog {
         GridLayout layout = new GridLayout(2, false);
         container.setLayout(layout);
 
-        createProjectCombo(container);
+        try {
+			createProjectCombo(container);
+		} catch (CoreException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+        
+        defaultLayout = new GridData();
+        defaultLayout.grabExcessHorizontalSpace = true;
+        defaultLayout.horizontalAlignment = GridData.FILL;
+        defaultLayout.widthHint = 100;
+        
         createDescription(container);
         createSteps(container);
         createExpected(container);
         
-        btnIncludeMuleApp = new Button(container, SWT.CHECK | SWT.WRAP);
+        btnIncludeMuleApp = new Button(container, SWT.CHECK | SWT.NONE);
         btnIncludeMuleApp.setText(INCLUDE_MULEAPP_LABEL);
         btnIncludeMuleApp.setSelection(true);
+        btnIncludeMuleApp.setLayoutData(defaultLayout);
+
         
         btnIncludeLogs = new Button(container, SWT.CHECK | SWT.WRAP);
         btnIncludeLogs.setText(INCLUDE_LOG_LABEL);
         btnIncludeLogs.setSelection(true);
+        btnIncludeMuleApp.setLayoutData(defaultLayout);
+
         return area;
     }
 
-    private void createProjectCombo(Composite container) {
+    private void createProjectCombo(Composite container) throws CoreException {
 
         Label lbtProjectCombo = new Label(container, SWT.NONE);
         lbtProjectCombo.setText(PROJECT_LABEL);
 
-        GridData dataProjectCombo = new GridData();
-        dataProjectCombo.grabExcessHorizontalSpace = true;
-        dataProjectCombo.horizontalAlignment = GridData.FILL;
-
-        cmbProjects = new Combo(container, SWT.BORDER);
-        cmbProjects.setLayoutData(dataProjectCombo);
+        cmbProjects = new Combo(container, SWT.NONE);
+        cmbProjects.setLayoutData(defaultLayout);
         
         workspace = ResourcesPlugin.getWorkspace();
         root = workspace.getRoot();
         projects = root.getProjects();
         int i=0;
         for(IProject p: projects) {
-        	cmbProjects.add(p.getName(), i++);
+        	if(p.hasNature("org.mule.tooling.core.muleStudioNature")) {
+        		cmbProjects.add(p.getName(), i);
+        		if(p.isOpen()) {
+        			cmbProjects.select(i);
+        		}
+        		i++;
+        	}
         }        
-
     }
 
     private void createDescription(Composite container) {
         Label lbtDescription = new Label(container, SWT.NONE);
         lbtDescription.setText(DESCRIPTION_LABEL);
-
-        GridData dataDescription = new GridData();
-        dataDescription.grabExcessHorizontalSpace = true;
-        dataDescription.horizontalAlignment = GridData.FILL;
         txtDescription = new Text(container, SWT.BORDER);
         txtDescription.setSize(40, 10);
-        txtDescription.setLayoutData(dataDescription);
+        txtDescription.setLayoutData(defaultLayout);
     }
 
     private void createSteps(Composite container) {
         Label lbtSteps = new Label(container, SWT.NONE);
         lbtSteps.setText(STEPS_LABEL);
-
-        GridData dataSteps = new GridData();
-        dataSteps.grabExcessHorizontalSpace = true;
-        dataSteps.horizontalAlignment = GridData.FILL;
         txtSteps = new Text(container, SWT.BORDER);
         txtSteps.setSize(40, 10);
-        txtSteps.setLayoutData(dataSteps);
+        txtSteps.setLayoutData(defaultLayout);
     }
     
     private void createExpected(Composite container) {
         Label lbtSteps = new Label(container, SWT.NONE);
         lbtSteps.setText(EXPECTED_LABEL);
-
-        GridData dataExpected = new GridData();
-        dataExpected.grabExcessHorizontalSpace = true;
-        dataExpected.horizontalAlignment = GridData.FILL;
         txtExpected = new Text(container, SWT.BORDER);
         txtExpected.setSize(40, 10);
-        txtExpected.setLayoutData(dataExpected);
+        txtExpected.setLayoutData(defaultLayout);
     }
     
     @Override

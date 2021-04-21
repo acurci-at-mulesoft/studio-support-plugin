@@ -8,6 +8,10 @@ public class CollectFiles {
 
 	public static File getMuleApp(IProject project) {
 		System.out.println(project.getFullPath());
+		System.out.println(project.getLocationURI());
+		System.out.println(project.getLocation());
+		System.out.println(project.getRawLocationURI());
+		System.out.println(project.getRawLocation());
 		//TODO
 		
 		
