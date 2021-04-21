@@ -163,7 +163,7 @@ public class SupportTicketDialog extends TitleAreaDialog {
         	attachments.add(CollectFiles.getLog());     	
         }
 
-        String issueNumber = SalesforceServices.createSupportCase(message, attachments);
+        String issueNumber = SalesforceServices.createSupportCase(projectName, message, attachments);
         
 
     }
