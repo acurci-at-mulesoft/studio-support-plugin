@@ -13,7 +13,7 @@ import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.util.EntityUtils;
-import org.json.JSONObject;
+import org.json.*;
 
 import java.io.File;
 import java.io.IOException;
@@ -39,6 +39,7 @@ public class SalesforceServices {
 	public static String createSupportCase(String projectName, String message, List<File> attachments)  {
 		String salesforceData = getAuthToken();
 		System.out.println(salesforceData);
+		
 		JSONObject salesforceJSON = new JSONObject(salesforceData);
 
 		String instanceUrl = salesforceJSON.getString("instance_url");

@@ -206,11 +206,10 @@ public class SupportTicketDialog extends TitleAreaDialog {
         
         IProject project = root.getProject(cmbProjects.getText());
         
-        message = " * " + PROJECT_LABEL				+ ": " + project.getName() +  "\n" + 
-        				 " * " + DESCRIPTION_LABEL			+ ": " + description +  "\n" + 
-        				 " * " + STEPS_LABEL 			 	+ ": " + steps 		 +  "\n" + 
-        				 " * " + EXPECTED_LABEL				+ ": " + expected    +  "\n" +
-        				 " * " + ATTACHMENTS_LABEL          + ":\n"+  fileChooser.getText();
+        message = " * " + PROJECT_LABEL				+ ": " + project.getName() +  " - " + 
+        				 " * " + DESCRIPTION_LABEL			+ ": " + description +  " - " + 
+        				 " * " + STEPS_LABEL 			 	+ ": " + steps 		 +  " - " + 
+        				 " * " + EXPECTED_LABEL				+ ": " + expected    +  " - " ;
         System.out.println(message);
         
         List<File> attachments = new ArrayList<>();
@@ -224,8 +223,8 @@ public class SupportTicketDialog extends TitleAreaDialog {
         	attachments.addAll(fileChooser.getFiles());     	
         }
         
-        //issueNumber = SalesforceServices.createSupportCase(projectName, message, attachments);
-        issueNumber = "5005e000000g4R3AAI";
+        issueNumber = SalesforceServices.createSupportCase(projectName, message, attachments);
+        //issueNumber = "5005e000000g4R3AAI";
     }
 
     @Override
