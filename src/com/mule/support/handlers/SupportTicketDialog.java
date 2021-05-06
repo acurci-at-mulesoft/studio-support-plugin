@@ -224,8 +224,8 @@ public class SupportTicketDialog extends TitleAreaDialog {
         	attachments.addAll(fileChooser.getFiles());     	
         }
         
-        issueNumber = SalesforceServices.createSupportCase(projectName, message, attachments);
-        //issueNumber = "5005e000000g4R3AAI";
+        //issueNumber = SalesforceServices.createSupportCase(projectName, message, attachments);
+        issueNumber = "5005e000000g4R3AAI";
     }
 
     @Override

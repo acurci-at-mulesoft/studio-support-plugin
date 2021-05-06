@@ -55,7 +55,7 @@ public class FileChooser extends Composite {
 				String[] strfiles = dlg.getFileNames();
 				String text = "";
 				for(int i=0; i<strfiles.length; i++) {
-					String f = path + File.pathSeparator + strfiles[i];
+					String f = path + File.separator + strfiles[i];
 					files.add(new File(f));
 					text+= f + "\n" ;
 				}
