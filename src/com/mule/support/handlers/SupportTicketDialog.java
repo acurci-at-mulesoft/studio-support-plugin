@@ -1,11 +1,13 @@
 package com.mule.support.handlers;
 
 import java.io.File;
+
 import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.core.resources.*;
 import org.eclipse.core.runtime.CoreException;
+
 import org.eclipse.jface.dialogs.IMessageProvider;
 import org.eclipse.jface.dialogs.TitleAreaDialog;
 import org.eclipse.swt.SWT;
@@ -15,10 +17,14 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
+
+import org.eclipse.swt.widgets.Event;
+
 import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
-import org.json.JSONException;
+
 
 
 public class SupportTicketDialog extends TitleAreaDialog {
@@ -32,6 +38,7 @@ public class SupportTicketDialog extends TitleAreaDialog {
 	private static final String EXPECTED_LABEL = "What is the behavior as you expected?";	
 	private static final String INCLUDE_MULEAPP_LABEL = "Include the Mule App";	
 	private static final String INCLUDE_LOG_LABEL = "Include the log file";	
+	private static final String ATTACHMENTS_LABEL = "Attachments";	
 	
 	private String issueNumber = null;
     private Combo cmbProjects;
@@ -41,11 +48,14 @@ public class SupportTicketDialog extends TitleAreaDialog {
     private Button btnIncludeMuleApp;
     private Button btnIncludeLogs;
     private GridData txtLayout;
+    private FileChooser fileChooser; 
+    
     
     private String projectName;
     private String description;
     private String steps;
     private String expected;
+    private String message;
     
     
     IWorkspace workspace;
@@ -88,6 +98,7 @@ public class SupportTicketDialog extends TitleAreaDialog {
         createDescription(container);
         createSteps(container);
         createExpected(container);
+        createFileChooser(container, layout);
         createIncludeMuleApp(container);
         createIncludeLogs(container);
 
@@ -145,6 +156,25 @@ public class SupportTicketDialog extends TitleAreaDialog {
         Label lbtEmpty = new Label(container, SWT.NONE);
     }
 
+    
+    private void createFileChooser(Composite container, GridLayout layout) {
+    	
+		Composite top = new Composite(container, SWT.NONE);// embedded Composite
+    	
+		Label l = new Label(container, SWT.WRAP);
+		l = new Label(container, SWT.WRAP);
+		l.setText(ATTACHMENTS_LABEL);
+
+		fileChooser = new FileChooser(container);
+		fileChooser.setLayoutData(txtLayout);
+
+		final Text text = new Text(top, SWT.MULTI | SWT.WRAP);
+		text.setText("");
+		text.setLayoutData(new GridData(GridData.FILL_BOTH));
+        Label lbtEmpty = new Label(container, SWT.NONE);
+
+    }
+    
     private void createIncludeMuleApp(Composite container) {
         Label lbtIncludeMuleApp = new Label(container, SWT.NONE);
         lbtIncludeMuleApp.setText(INCLUDE_MULEAPP_LABEL);
@@ -158,6 +188,8 @@ public class SupportTicketDialog extends TitleAreaDialog {
 	    btnIncludeLogs = new Button(container, SWT.CHECK | SWT.WRAP);
 	    btnIncludeLogs.setSelection(true);
     }
+
+    
         
     @Override
     protected boolean isResizable() {
@@ -174,21 +206,26 @@ public class SupportTicketDialog extends TitleAreaDialog {
         
         IProject project = root.getProject(cmbProjects.getText());
         
-        String message = " * " + PROJECT_LABEL				+ ": " + project.getName() +  "\n" + 
+        message = " * " + PROJECT_LABEL				+ ": " + project.getName() +  "\n" + 
         				 " * " + DESCRIPTION_LABEL			+ ": " + description +  "\n" + 
         				 " * " + STEPS_LABEL 			 	+ ": " + steps 		 +  "\n" + 
-        				 " * " + EXPECTED_LABEL				+ ": " + expected    +  "\n"  ;
+        				 " * " + EXPECTED_LABEL				+ ": " + expected    +  "\n" +
+        				 " * " + ATTACHMENTS_LABEL          + ":\n"+  fileChooser.getText();
         System.out.println(message);
-
+        
         List<File> attachments = new ArrayList<>();
         if(btnIncludeMuleApp.getSelection()){
         	attachments.addAll(CollectFiles.getMuleApp(project));
         }
         if(btnIncludeLogs.getSelection()){
         	attachments.addAll(CollectFiles.getLog(project));     	
+        }        
+        if(!fileChooser.getText().isEmpty()){
+        	attachments.addAll(fileChooser.getFiles());     	
         }
-        //issueNumber = SalesforceServices.createSupportCase(projectName, message, attachments);
-        issueNumber = "5005e000000g4R3AAI";
+        
+        issueNumber = SalesforceServices.createSupportCase(projectName, message, attachments);
+        //issueNumber = "5005e000000g4R3AAI";
     }
 
     @Override
@@ -217,7 +254,9 @@ public class SupportTicketDialog extends TitleAreaDialog {
     	return issueNumber;
     }
     
-    
+    public String getMessage() {
+    	return message;
+    }
     
 
 }

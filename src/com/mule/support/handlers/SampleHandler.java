@@ -20,7 +20,7 @@ public class SampleHandler extends AbstractHandler {
 		if (dialog.open() == Window.OK) {
 		    System.out.println("ISSUE ID:" + dialog.getIssueNumber());
 		}
-		MessageDialog.openConfirm(window.getShell(), "Confirm", "ISSUE GENERATED: " + dialog.getIssueNumber());
+		MessageDialog.openConfirm(window.getShell(), "Confirm", "ISSUE GENERATED: " + dialog.getIssueNumber() + "\nDetails:\n" + dialog.getMessage());
 		return null;
 	}
 	
