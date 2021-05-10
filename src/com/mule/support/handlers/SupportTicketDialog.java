@@ -32,13 +32,13 @@ public class SupportTicketDialog extends TitleAreaDialog {
 	private static final String TITLE = "Create a ticket for support";
 	private static final String DISCLAIMER = "WARNING: Don't attach files with confidential information or private credentials.";
 
-	private static final String PROJECT_LABEL = "Mule Application";
-	private static final String DESCRIPTION_LABEL = "What were you doing?";
-	private static final String STEPS_LABEL = "How can we reproduce the problem?";	
-	private static final String EXPECTED_LABEL = "What is the behavior as you expected?";	
-	private static final String INCLUDE_MULEAPP_LABEL = "Include the Mule App";	
-	private static final String INCLUDE_LOG_LABEL = "Include the log file";	
-	private static final String ATTACHMENTS_LABEL = "Attachments";	
+	static final String PROJECT_LABEL = "Mule Application";
+	static final String DESCRIPTION_LABEL = "What were you doing?";
+	static final String STEPS_LABEL = "How can we reproduce the problem?";	
+	static final String EXPECTED_LABEL = "What is the behavior as you expected?";	
+	static final String INCLUDE_MULEAPP_LABEL = "Include the Mule App";	
+	static final String INCLUDE_LOG_LABEL = "Include the log file";	
+	static final String ATTACHMENTS_LABEL = "Attachments";	
 	
 	private String issueNumber = null;
     private Combo cmbProjects;
